@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+            integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+            integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+            crossorigin="anonymous"></script>
+    <title>Document</title>
+</head>
+<body>
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}" role="alert">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
+<h1>Product Detail: </h1>
+<div>
+    <h2>Title: {{ product.title }}</h2>
+    <img src="{{ product.image.url }}" alt="image" style="width: 500px; height: 300px">
+    <h4>Price: {{ product.price }}</h4>
+    <h4>Count: {{ product.amount }}</h4>
+    <p>Description: {{ product.description }}</p>
+</div>
+
+<h2><a href="{% url 'order:shopcart' %}">Shopcart</a></h2>
+
+{% if user.id is not None %}
+    <form method="post" action="{% url 'order:addtoshopcart' pk=product.pk %}"
+          class="product-form product-form-product-template hidedropdown">
+        {% csrf_token %}
+        <div class="product-action clearfix">
+            <div class="product-form__item--quantity">
+                <div class="wrapQtyBtn">
+                    <div class="quantity">
+                        <input class="input" name="quantity" type="number" value="1" min="1" max="{{ product.amount }}">
+                    </div>
+                </div>
+            </div>
+            <div class="product-form__item--submit">
+                <a href="{% url 'order:addtoshopcart' pk=product.pk %}">
+                    <button type="submit" name="add" class="btn product-form__cart-submit">
+                        {% if product.amount %}
+                            <span>Add To Cart</span>
+                        {% else %}
+                            <h4>Product The End</h4>
+                        {% endif %}
+                    </button>
+                </a>
+            </div>
+            <div class="shopify-payment-button" data-shopify="payment-button">
+            </div>
+        </div>
+    </form>
+{% else %}
+    <div class="ui grid">
+        <div class="six wide column">
+            <h3>You must sign in or sign up</h3>
+            <ul>
+                <li style="list-style-type: none"><a style="color: red" href="{% url 'user:login' %}">Login</a></li>
+                <li style="list-style-type: none"><a style="color: red" href="{% url 'user:register' %}">Sign Up</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+{% endif %}
+
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+            integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+            integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+            crossorigin="anonymous"></script>
+    <title>{{ setting.title }}</title>
+</head>
+<body>
+{{ setting.company }}
+<ul>
+    <h4>Categories</h4>
+    {% for category in categories %}
+        <li><a href="{% url 'basic:category_products' pk=category.pk %}">{{ category.title }}</a></li>
+    {% endfor %}
+</ul>
+
+<div>
+    {% if user.is_authenticated %}
+        <h2><a href="{% url 'user:index' %}">{{ user.username }}</a></h2>
+        <br>
+        <h2><a href="{% url 'user:logout' %}">Log out</a></h2>
+    {% else %}
+        <h2><a href="{% url 'user:register' %}">Register here</a></h2>
+        <h3>or</h3>
+        <h2><a href="{% url 'user:login' %}">Login</a></h2>
+    {% endif %}
+</div>
+
+<div>
+    <h4><a href="{% url 'user:user-orders' %}">My Orders</a></h4>
+</div>
+
+<div>
+    <h2>Last 20 Product</h2>
+    <ul>
+        {% for product in products %}
+            <li>Title: <a href="{% url 'basic:product_detail' pk=product.pk %}">{{ product.title }}</a></li>
+            <li>Category: <a href="{% url 'basic:category_products' pk=product.category.pk %}">{{ product.category }}</a></li>
+            <li>Image: <img style="width: 500px; height: 300px" src="{{ product.image.url }}" alt="image"></li>
+            <li>Description: <p>{{ product.description|truncatewords:10 }}</p></li>
+        {% endfor %}
+    </ul>
+</div>
+</body>
+</html>
